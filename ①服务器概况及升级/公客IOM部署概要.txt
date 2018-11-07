@@ -1,0 +1,29 @@
+CRT<<<<<<<<<<<<<<<<<<<<<<<<
+IOM  TIMER正式库
+133.63.202.22:8201   iomtimer  iomtimer
+IOM 接口
+133.63.202.20:8101	iominterf iominterf
+IOM 应用
+133.63.202.104:8001  iomweb	iomweb
+
+
+
+SPS TIMER正式库
+133.63.202.23:7501 	spstimer  spstimer
+SPS 接口
+133.63.202.24:7601   spsinterf spsinterf
+SPS 应用
+133.63.202.105:7701	spsweb	spsweb
+
+web_mos
+133.63.202.22:7801
+
+
+公客测试环境
+http://133.63.202.28:8203/web/login.jsp
+
+IOM测试环境
+http://133.63.202.28:7203/web/login.jsp
+
+
+

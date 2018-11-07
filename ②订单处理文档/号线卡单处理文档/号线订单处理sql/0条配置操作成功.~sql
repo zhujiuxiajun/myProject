@@ -1,0 +1,5 @@
+SELECT * FROM device a where a.name = '四川省南充蓬安县金溪镇正街153号1单元PAJXFG009/H-1';
+SELECT t.*,t.rowid FROM odd t WHERE    t.id = '602523725';
+
+SELECT * FROM port a WHERE   a.id = '123843112';
+SELECT * FROM device a WHERE a.id = '602518266';

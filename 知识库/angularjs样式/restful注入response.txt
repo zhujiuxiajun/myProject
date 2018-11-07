@@ -1,0 +1,60 @@
+@Path("UserContext")  
+public class UserContext {  
+      
+    @Context UriInfo uriInfo;  
+    @Context HttpHeaders httpHeaders;  
+    @Context SecurityContext sc;  
+    @Context Request req;  
+    @Context Response resp;  
+    @Context HttpServletResponse response;  
+    @Context HttpServletRequest request;  
+      
+    @GET  
+    public String hi(@QueryParam("name") String yourName ){  
+        if(yourName!=null)  
+            request.getSession().setAttribute("name", yourName);  
+          
+        String username = (String) request.getSession().getAttribute("name");  
+        if(username!=null){  
+            System.out.println(request.getSession().getId() + ":" + username);  
+        }  
+        else{  
+            System.out.println(request.getSession().getId() + "没有用户");  
+        }  
+        return null;  
+    }  
+}  
+
+
+
+[xhtml] view plain copy
+<!--在web.xml加入-->  
+  <servlet>  
+    <display-name>JAX-RS REST Servlet</display-name>  
+    <servlet-name>JAX-RS REST Servlet</servlet-name>  
+    <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>  
+    <load-on-startup>1</load-on-startup>  
+  </servlet>  
+  <servlet-mapping>  
+    <servlet-name>JAX-RS REST Servlet</servlet-name>  
+    <url-pattern>/services/*</url-pattern>  
+  </servlet-mapping>  
+
+
+
+部署部运行
+http://localhost:8080/rest/services/UserContext
+后台会提示：
+[c-sharp] view plain copy
+A46756539D2E39CC2CFFCB3FE1C99E70没有用户  
+
+
+
+然后运行
+http://localhost:8080/rest/services/UserContext?name=hello
+后台会出现
+[xhtml] view plain copy
+A46756539D2E39CC2CFFCB3FE1C99E70:hello  
+
+ 
+ 

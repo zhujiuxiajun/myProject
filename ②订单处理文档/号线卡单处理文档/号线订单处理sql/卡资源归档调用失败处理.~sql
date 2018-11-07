@@ -1,0 +1,2 @@
+select t.*,t.rowid from so_res t where t.so_nbr = '8116012003157511';--act_type 状态为4为正常
+p_add_so

@@ -1,0 +1,1 @@
+sc_rms_lc.delete_serv_ins_all

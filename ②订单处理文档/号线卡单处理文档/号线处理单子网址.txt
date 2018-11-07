@@ -1,0 +1,7 @@
+http://133.63.202.71:7002/web/tm/WoQueryAction.do?&method=queryWoList4CRM&author=Y&extSoNbr=8116040740112796
+¶ÌºÅ
+
+
+
+http://133.63.202.72:8002/web/tm/WoQueryAction.do?method=queryWoList4SctcCRM&author=Y&soNbr=8171605100951621217
+³¤ºÅ

@@ -1,0 +1,7 @@
+su - grid
+密码：grid
+asmcmd
+lsdg
+
+
+查看Usable_file_MB大小，是否空间充足。

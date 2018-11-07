@@ -1,0 +1,12 @@
+httpsrepo.maven.apache.orgmaven2
+
+从远程库找到需要的jar包路径，在pom.xml中配置，中央库setting配置文件
+
+
+//依赖列子
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-examples</artifactId>
+            <version>3.8</version>
+        </dependency>

@@ -1,0 +1,7 @@
+SELECT a.*,a.rowid FROM device a where a.name = '设备名称';
+SELECT a.*,a.rowid FROM odd a WHERE    a.id = '603257679';
+
+--根据标准地址查询设备id（NETRESCODE字段），再根据设备id查odd表
+select *
+  from tenetrescover t
+ where t.cydz = '四川省成都大邑晋原镇温泉路润驰广场对面建华小区‘15年乡镇专项第1批’6栋2单元1层01'

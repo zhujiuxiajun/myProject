@@ -1,0 +1,47 @@
+1.清除归档日志前，查看磁震空间是否基本没有空余空间。(磁震目前在正式库有)
+su - grid
+密码：grid
+asmcmd
+lsdg
+查看Usable_file_MB大小，是否空间充足。
+
+2.查看system空间是否满了，(审计表：相当于操作日志记录)
+$ su - oracle  oracle用户
+$ sqlplus / as sysdba进入数据库
+SQL> set linesize 200
+SQL> set pagesize 300
+SQL> col used% for a20
+SQL> col FILE_NAME for a60
+-----------------------------------------------
+select t.status,
+        t.file_name,
+        t.tablespace_name,
+        t.file_id,
+        t.relative_fno,
+        t.total,
+        (total - free) as "used",
+        round(100 * (1 - (free / total)), 3) || '%' as "used",
+        autoextensible
+   from (select status,
+                file_name,
+                tablespace_name,
+                file_id,
+                relative_fno,
+                bytes / 1024 / 1024 / 1024 total,
+                autoextensible
+           from dba_data_files) t
+   left join (select file_id, sum(bytes / 1024 / 1024/ 1024) free
+                from dba_free_space
+               group by file_id) f on (t.file_id = f.file_id)
+  order by tablespace_name, round(100 * (1 - (free / total)), 3) desc;
+-----------------------------------------------
+
+扩数据文件(表空间扩容)
+altertablespace  RMSSC_DATA add datafile '+DATA/rms/datafile/rmssc_data_1127_03.dbf' size 30G;
+------------------------------------------------
+SYSTEM空间超过50%，需经行清理，对审计表空间进行查询：(清除归档日志)
+查询
+select * from sys.aud$;
+删除
+truncate table sys.aud$;
+

@@ -1,0 +1,162 @@
+
+1.SoParseTimer(订单解析Timer)
+SELECT count(0)
+  FROM (SELECT IMSG.MSG_ID,
+               IMSG.LOCAL_NET_ID,
+               IMSG.AREA_ID,
+               IMSG.ASK_NO,
+               IMSG.CO_NBR,
+               IMSG.MSG_TYPE,
+               IMSG.REAL_TIME_FLAG,
+               IMSG.LOCK_FLAG,
+               IMSG.PRIORITY,
+               IMSG.DEPT_ID,
+               IMSG.SERV_INST_ID,
+               IMSG.STAFF_ID,
+               IMSG.MSG_OCCUR_DATE,
+               IMSG.MSG_OPER_DATE,
+               IMSG.MSG_FLAG,
+               IMSG.MSG_CALL_COUNT,
+               IMSG.FAIL_REASON_ID,
+               IMSG.CSO_NBR,
+               IMSG.BAK_DATE,
+               IMSG.SERVICE_ORDER_ID,
+               IMSG.RELA_EXT_WO_NBR,
+               IMSG.EXT_WO_NBR,
+               IMSG.REMARKS
+          FROM INTER_MSG_CENTER IMSG
+         WHERE IMSG.MSG_ID > 6186869
+           AND ((IMSG.REAL_TIME_FLAG = 'N' AND IMSG.MSG_FLAG = '0') OR
+               IMSG.MSG_FLAG = '2')
+           AND IMSG.LOCK_FLAG = 'N'
+           AND IMSG.MSG_CALL_COUNT < 3
+         ORDER BY IMSG.MSG_ID)
+
+
+2.SoMatchTimer(流程匹配Timer)
+SELECT count(0)
+  FROM (SELECT SOMSG.MSG_ID,
+               SOMSG.LOCAL_NET_ID,
+               SOMSG.AREA_ID,
+               SOMSG.ASK_NO,
+               SOMSG.CO_NBR,
+               SOMSG.MSG_TYPE,
+               SOMSG.REAL_TIME_FLAG,
+               SOMSG.LOCK_FLAG,
+               SOMSG.CSO_NBR,
+               SOMSG.PRIORITY,
+               SOMSG.DEPT_ID,
+               SOMSG.SERV_INST_ID,
+               SOMSG.STAFF_ID,
+               SOMSG.MSG_OCCUR_DATE,
+               SOMSG.MSG_OPER_DATE,
+               SOMSG.MSG_FLAG,
+               SOMSG.MSG_CALL_COUNT,
+               SOMSG.FAIL_REASON_ID,
+               SOMSG.BAK_DATE,
+               SOMSG.EXT_WO_NBR,
+               SOMSG.RELA_EXT_WO_NBR,
+               SOMSG.REMARKS
+          FROM SO_MSG_CENTER SOMSG
+         WHERE SOMSG.MSG_ID > 0
+           AND ((SOMSG.REAL_TIME_FLAG = 'N' AND SOMSG.MSG_FLAG = '0') OR
+               SOMSG.MSG_FLAG = '2')
+           AND SOMSG.MSG_TYPE = 'SM'
+           AND SOMSG.LOCK_FLAG = 'N'
+           AND SOMSG.MSG_CALL_COUNT < 3
+         ORDER BY SOMSG.MSG_ID)
+
+3.AutoStepTimer(工单流转)
+SELECT count(0)
+  FROM (SELECT A.ACC_NBR,
+               A.ACT_TYPE,
+               A.ALARM_DATE,
+               A.AREA_ID,
+               A.AR_FLAG,
+               A.ASGN_DATE,
+               A.AZ_FLAG,
+               A.BOOKED_FLAG,
+               A.BOOK_FLAG,
+               A.BRANCH_ID,
+               A.BUSI_STS,
+               A.BUSI_STS_DATE,
+               A.COLLAB_WO_NBR,
+               A.COMPL_DATE,
+               A.DEAL_FLAG,
+               A.DO_TIME,
+               A.DYN_FLAG,
+               A.EXCH_ID,
+               A.FAIL_REASON_ID,
+               A.FULL_FLAG,
+               A.HALT,
+               A.HALT_DATE,
+               A.LOCAL_NET_ID,
+               A.MAINT_AREA_ID,
+               A.MAIN_FLAG,
+               A.MERG_FLAG,
+               A.MT_AREA_NAME,
+               A.NOTIFY_FLAG,
+               A.N_WO_NBR,
+               A.OVERTIME_ID,
+               A.PRE_ALARM_DATE,
+               A.PRINT_COUNT,
+               A.PRIORITY,
+               A.REASGN_COUNT,
+               A.RELA_WO_NBR,
+               A.REMARKS,
+               A.RT_STAFF_ID,
+               A.RT_STAFF_NAME,
+               A.RUN_STS,
+               A.RUN_STS_DATE,
+               A.SERV_DEPT_ID,
+               A.SERV_INST_ID,
+               A.SO_NBR,
+               A.STEP_ID,
+               A.WORK_AREA_ID,
+               A.WORK_ITEM_ID,
+               A.WORK_MODE,
+               A.WO_NBR,
+               A.WO_STAFF_ID,
+               A.WO_STAFF_NAME,
+               A.WO_TYPE
+          FROM WO A, SO B, STEP S
+         WHERE A.WO_NBR > 0
+           AND A.WORK_MODE = 'A'
+           AND B.STS = 'A'
+           AND A.SO_NBR = B.SO_NBR
+           AND ((A.RUN_STS = 'D' AND B.SO_LOCK_STS = 'N') OR A.RUN_STS = 'W')
+           AND S.STEP_ID = A.STEP_ID
+           AND S.WORK_SYSTEM = 'RMS'
+           AND A.REASGN_COUNT <= 3
+           AND (B.REAL_TIME_FLAG = 'Y' AND A.BUSI_STS = 'I' OR
+               B.REAL_TIME_FLAG = 'N')
+         ORDER BY A.WO_NBR)
+
+4.SwitchTimer(IOM收到激活单子后状态转化timer)
+SELECT count(0)
+  FROM (SELECT SP.SPJK_ID,
+               SP.SO_NBR,
+               SP.WO_NBR,
+               SP.STEP_ID,
+               SP.STS,
+               SP.SERV_INST_ID,
+               SP.PRIORITY,
+               SP.ERR_CODE,
+               SP.ERR_MSG,
+               SP.DEAL_COUNT,
+               SP.REMARKS
+          FROM SPJK_TABLE SP
+         WHERE SP.SPJK_ID > 6819473
+           AND SP.STS NOT IN ('D', 'P')
+           AND (SP.BUSI_TYPE = 'SO' OR SP.BUSI_TYPE = 'PH')
+           AND SP.BACKFILL_FLAG IN ('N', 'F')
+           AND SP.DEAL_COUNT < 3
+         ORDER BY SP.SPJK_ID)
+
+
+
+
+
+
+
+

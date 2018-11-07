@@ -1,0 +1,15 @@
+create public database link RMS_TO_SPS connect to sps identified by sps4sc
+¡¡¡¡ using '(DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 133.63.202.45)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = SPS)
+    )
+  )';
+
+
+
+
+
+drop public database link dblinkname;

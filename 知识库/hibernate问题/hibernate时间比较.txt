@@ -1,0 +1,6 @@
+sql和hql时间比较(mysql数据库)  
+date_format(expect_start_time,'%Y-%m-%d') = '2017-10-23'  
+  
+Criteria时间比较  
+SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");  
+c.add(Restrictions.eq("planDate",sdf.parse((expect_start_time))); 

@@ -1,0 +1,8 @@
+SQL> variable job2010 number;
+SQL> begin
+  2  dbms_job.submit(:job2010,'JOB_PRO_TEST;',sysdate,'sysdate+1/1440');
+  3  end;
+  4  /
+
+
+sysdate+5/1440   --五分钟执行一次  

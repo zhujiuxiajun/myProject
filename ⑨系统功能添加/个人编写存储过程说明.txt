@@ -1,0 +1,7 @@
+IOM_50_RAC,iom数据库
+1.pciom_checkaaa(用于监控AAA停复机数量，job定时器ID(65),每五分钟监控一次)
+2.pciom_checkaaa(用于监控iom部分timer，job定时器ID(103),每五分钟监控一次)
+
+rms_51,号线数据库
+1.pcrms_checkHGD(用于监控查看回滚段，job定时器ID(85),每五分钟监控一次)
+2.pcrms_check_res_interface(用于处理订单同步卡单问题，job定时器ID(107),每五分钟执行一次)

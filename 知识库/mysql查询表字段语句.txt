@@ -1,0 +1,6 @@
+select COLUMN_NAME from INFORMATION_SCHEMA.Columns where table_name='mplan_task'£»
+
+
+
+
+select CONCAT(CONCAT(CONCAT('"',CONCAT('a.',CONCAT(COLUMN_NAME,','))),'"'),'+')  from INFORMATION_SCHEMA.Columns where table_name='mplan_task'

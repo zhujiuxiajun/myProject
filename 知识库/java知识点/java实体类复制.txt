@@ -1,0 +1,2 @@
+BeanUtils.copyProperties(accBuildData,acc);
+(Ô´£¬Ä¿±ê)

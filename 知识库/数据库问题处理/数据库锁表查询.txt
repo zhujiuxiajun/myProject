@@ -1,0 +1,46 @@
+SELECT /*+ rule */
+lpad(' ', decode(l.xidusn, 0, 3, 0)) || l.oracle_username,
+ logon_time,o.owner,o.object_name,o.object_type,s.sid,s.serial#,s.OSUSER,
+s.MACHINE,s.TERMINAL,s.USERNAME,SECONDS_IN_WAIT
+  FROM v$locked_object l, dba_objects o, v$session s
+ WHERE l.object_id = o.object_id and s.username  in('BDWSPS','SPS_DEV','INAS') AND l.session_id = s.sid and s.status<> 'KILLED' and seconds_in_wait> 60
+ ORDER BY seconds_in_wait DESC;
+
+-------------------------------------------------------------
+SELECT
+  A.OWNER,                  --OBJECT所属用户
+  A.OBJECT_NAME,           --OBJECT名称（表名）
+  B.XIDUSN,
+  B.XIDSLOT,
+  B.XIDSQN,
+  B.SESSION_ID,              --锁表用户的session
+  B.ORACLE_USERNAME,        --锁表用户的Oracle用户名
+  B.OS_USER_NAME,           --锁表用户的操作系统登陆用户名
+  B.PROCESS,
+  B.LOCKED_MODE, 
+  C.MACHINE,                 --锁表用户的计算机名称（例如：WORKGROUP\UserName）
+  C.STATUS,                   --锁表状态
+  C.SERVER,
+  C.SID,
+  C.SERIAL#,
+  C.PROGRAM                    --锁表用户所用的数据库管理工具（例如：ob9.exe）
+FROM ALL_OBJECTS A,
+     V$LOCKED_OBJECT B,
+     SYS.GV_$SESSION C 
+WHERE A.OBJECT_ID = B.OBJECT_ID
+AND B.PROCESS = C.PROCESS
+ORDER BY 1,2 ;
+
+----------------------------------------------------------
+将下列查询后表中的语句复制粘贴进SQL窗口中执行即可批量杀锁。
+SELECT 'alter system kill session''' ||
+  C.SID
+  || ',' ||
+  C.SERIAL# 
+  ||''';'               
+FROM
+  ALL_OBJECTS A,
+  V$LOCKED_OBJECT B,
+  SYS.GV_$SESSION C 
+WHERE A.OBJECT_ID = B.OBJECT_ID
+  AND B.PROCESS = C.PROCESS;

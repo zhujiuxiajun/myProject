@@ -1,0 +1,57 @@
+02866150005
+02866150006
+02866150008
+02866150009
+02866150012
+02866150013
+02866150016
+02866150017
+02866150018
+02866150023
+02866150025
+02866150027
+02866150029
+02866150038
+02866150040
+02866150045
+02866150046
+02866150048
+02866150050
+02866150055
+02866150062
+02866150063
+02866150066
+ 
+ 
+  update serv_acc_nbr a
+     set a.sts = 2
+   WHERE a.serv_id in (select a.serv_id
+                         from serv_acc_nbr a
+                        WHERE a.acc_nbr = '66150068'
+                          and a.local_net_id = 810);
+  update serv a
+     set a.sts = 2
+   WHERE a.serv_id in (select a.serv_id
+                         from serv_acc_nbr a
+                        WHERE a.acc_nbr = '66150068'
+                          and a.local_net_id = 810);
+  update serv_addr a
+     set a.sts = 2
+   WHERE a.serv_id in (select a.serv_id
+                         from serv_acc_nbr a
+                        WHERE a.acc_nbr = '66150068'
+                          and a.local_net_id = 810);
+  update serv_res a
+     set a.sts = 2
+   WHERE a.serv_id in (select a.serv_id
+                         from serv_acc_nbr a
+                        WHERE a.acc_nbr = '66150068'
+                          and a.local_net_id = 810);
+  update logical_dn a
+     set a.status = 10
+   WHERE a.all_line_nbr = '66150068'
+     and a.local_net_id = 810;
+  update physical_dn a
+     set a.status = 10
+   WHERE a.all_line_nbr = '66150068'
+     and a.local_net_id = 810;

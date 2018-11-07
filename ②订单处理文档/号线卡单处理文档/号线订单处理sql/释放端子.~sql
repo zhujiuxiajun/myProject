@@ -1,0 +1,5 @@
+SELECT a.*,a.rowid FROM   device a where a.id = '602058301';
+ 
+select a.*,a.rowid from    tedjsbdz a WHERE a.dzmc = 'CD.JJQ.DUICT/F01/MA5680T/J2/ODB02/CD03';
+
+--释放端子，YWZT字段:30改成10

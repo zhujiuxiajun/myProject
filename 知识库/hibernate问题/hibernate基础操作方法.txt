@@ -1,0 +1,367 @@
+ /**
+     * 原生sql的查询
+     *
+     * @param <T>
+     *            结果类型
+     * @param resultClass
+     *            结果类型
+     * @param sql
+     *            查询语句
+     * @param params
+     *            查询参数
+     * @return 返回结果List结果集
+     */
+    @SuppressWarnings("unchecked")
+    public <T> List<T> nFind(Class<T> resultClass, String sql, Object... params) {
+        Assert.notNull(resultClass, "结果类型不能为空");
+        Assert.notNull(sql, "SQL查询语句不能为空");
+
+        Session s = getSession();
+        Transaction t = s.beginTransaction();
+        SQLQuery query = null;
+        List<T> retval = new ArrayList<T>();
+        try {
+            query = s.createSQLQuery(sql);
+            if (params != null && params.length > 0) {
+                for (int i = 0; i < params.length; i++) {
+                    Object param = params[i];
+                    query.setParameter(i, param);
+                }
+            }
+            query.setResultTransformer(new BeanResultTransformer(resultClass));
+            retval = query.list();
+            t.commit();
+        } catch (Exception e) {
+            t.rollback();
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }
+        return retval;
+    }
+
+    /**
+     * 原生sql的查询,带分页参数
+     *
+     * @param <T>
+     *            结果类型
+     * @param resultClass
+     *            结果类型
+     * @param sql
+     *            查询语句
+     * @param params
+     *            查询参数
+     * @return 返回结果List结果集
+     */
+    @SuppressWarnings("unchecked")
+    public <T> List<T> npFind(final IPagableDTO<T> page, Class<T> resultClass, String sql, Object... params) {
+        Assert.notNull(resultClass, "结果类型不能为空");
+        Assert.notNull(sql, "SQL查询语句不能为空");
+
+        Session s = getSession();
+        Transaction t = s.beginTransaction();
+        SQLQuery query = null;
+        List<T> retval = new ArrayList<T>();
+        try {
+            query = s.createSQLQuery(sql);
+            if (params != null && params.length > 0) {
+                for (int i = 0; i < params.length; i++) {
+                    Object param = params[i];
+                    query.setParameter(i, param);
+                }
+            }
+            query.setResultTransformer(new BeanResultTransformer(resultClass));
+            if (page != null){
+                List total = query.list();
+                page.setTotalRow(total.size());
+            }
+            PageUtils.setPageParameter(query, page);
+            retval = query.list();
+            t.commit();
+        } catch (Exception e) {
+            t.rollback();
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }
+        return retval;
+    }
+
+    /**
+     * 原生sql的查询,带参数，带分页
+     *
+     * @param <T>
+     *            结果类型
+     * @param resultClass
+     *            结果类型
+     * @param sql
+     *            查询语句
+     * @param params
+     *            查询参数
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public <T> IPagableDTO<T> nFindPagable(final IPagableDTO<T> page, Class<T> resultClass, String sql, Object... params) {
+        Assert.notNull(resultClass, "结果类型不能为空");
+        Assert.notNull(sql, "SQL查询语句不能为空");
+
+        Session s = getSession();
+        Transaction t = s.beginTransaction();
+        SQLQuery query = null;
+        List<T> retval = new ArrayList<T>();
+        try {
+            query = s.createSQLQuery(sql);
+            if (params != null && params.length > 0) {
+                for (int i = 0; i < params.length; i++) {
+                    Object param = params[i];
+                    query.setParameter(i, param);
+                }
+            }
+            query.setResultTransformer(new BeanResultTransformer(resultClass));
+            if (page != null){
+                List total = query.list();
+                page.setTotalRow(total.size());
+            }
+            PageUtils.setPageParameter(query, page);
+            retval = query.list();
+            page.setData(retval);
+            t.commit();
+        } catch (Exception e) {
+            t.rollback();
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }
+        return page;
+    }
+
+    /**
+     * 根据查询HQL与返回对象类型创建Query对象,不带参数.
+     * @param hql
+     * @param entityClazz
+     * @param <T>
+     * @return
+     */
+    public <T> List<T> hFind(String hql, Class<T> entityClazz) {
+        Session s = getSession();
+        Transaction t = s.beginTransaction();
+        List<T> retval = null;
+        try {
+            Query query = s.createQuery(hql);
+            retval = query.list();
+            t.commit();
+        } catch (Exception e) {
+            t.rollback();
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }
+        return retval;
+    }
+
+    /**
+     * 根据查询HQL与返回对象类型创建Query对象,带参数。
+     * @param hql
+     * @param entityClazz
+     * @param values
+     * @param <T>
+     * @return 返回List对象
+     */
+    public <T> List<T> hFind(String hql, Class<T> entityClazz, final Object... values) {
+        Session s = getSession();
+        Transaction t = s.beginTransaction();
+        List<T> retval = null;
+        try {
+            Query query = s.createQuery(hql);
+            if (values != null) {
+                for (int i = 0; i < values.length; i++) {
+                    query.setParameter(i, values[i]);
+                }
+            }
+            retval = query.list();
+            t.commit();
+        } catch (Exception e) {
+            t.rollback();
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }
+        return retval;
+    }
+
+    /**
+     * 按HQL分页查询. 不支持自动获取总结果数,需用户另行执行查询.
+     *
+     * @param page
+     *            分页参数.仅支持pageSize 和firstResult,忽略其他参数.
+     * @param hql
+     *            hql语句.
+     * @param values
+     *            数量可变的查询参数.
+     * @param <T>
+     *            返回列表里的类型，可以不是Entity
+     *
+     * @return 分页查询结果,附带结果列表及所有查询时的参数.
+     */
+    @SuppressWarnings("unchecked")
+    public <T> IPagableDTO<T> hFindPagable(final IPagableDTO<T> page, final String hql,
+                                           final Object... values) {
+        Session s = getSession();
+        Transaction t = s.beginTransaction();
+        try {
+            Query query = s.createQuery(hql);
+            if (values != null) {
+                for (int i = 0; i < values.length; i++) {
+                    query.setParameter(i, values[i]);
+                }
+            }
+            if (page != null){
+                List total = query.list();
+                 page.setTotalRow(total.size());
+            }
+            PageUtils.setPageParameter(query, page);
+            List result = query.list();
+            page.setData(result);
+            t.commit();
+        } catch (Exception e) {
+            t.rollback();
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }
+        return page;
+    }
+
+    /**
+     * 执行Update或Delete的sql
+     * @param sql
+     * @param values
+     * @return
+     */
+    public int nExecuteUpdate(String sql, Object...values) {
+        Session s = getSession();
+        Transaction t = s.beginTransaction();
+        int retval = 0;
+        try {
+            SQLQuery query = s.createSQLQuery(sql);
+            if (values != null) {
+                for (int i = 0; i < values.length; i++) {
+                    query.setParameter(i, values[i]);
+                }
+            }
+            retval = query.executeUpdate();
+            t.commit();
+        } catch (Exception e) {
+            t.rollback();
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }
+        return retval;
+    }
+
+    /**
+     * 执行Update或Delete的hql
+     * @param hql
+     * @param values
+     * @return
+     */
+    public int hExecuteUpdate(String hql, Object...values) {
+        Session s = getSession();
+        Transaction t = s.beginTransaction();
+        int retval = 0;
+        try {
+            Query query = s.createQuery(hql);
+            if (values != null) {
+                for (int i = 0; i < values.length; i++) {
+                    query.setParameter(i, values[i]);
+                }
+            }
+            retval = query.executeUpdate();
+            t.commit();
+        } catch (Exception e) {
+            t.rollback();
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }
+        return retval;
+    }
+
+    /**
+     * save 一个对象，如果没有id，新生成一个对象，如果有id，更新一个对象
+     * 返回对象类型不是Entity时可用此函数灵活查询.
+     *
+     * @param entity
+     *            数量可变的参数
+     */
+    public <T extends EntityBase>  T saveEntity(T entity) {
+        Session s = getSession();
+        Transaction t = s.beginTransaction();
+        try {
+            if (StringUtils.isEmpty(entity.getId())) {//新增
+                entity.setId(UUIDEx.randomUUID().to32String());
+                s.save(entity);
+            }else {
+                s.merge(entity);
+            }
+            t.commit();
+           } catch (Exception e) {
+            t.rollback();
+            log.error(e.getMessage());
+            e.printStackTrace();
+        }
+        return entity;
+    }
+
+    /**
+     * 根据ID，类 删除一个实体
+     * @param entityClazz
+     * @param entityId
+     * @param <T>
+     */
+    public <T> void deleteEntity(Class<T> entityClazz, String entityId) {
+        Session s = getSession();
+        Transaction t = s.beginTransaction();
+        try {
+            s.delete(s.get(entityClazz, entityId));
+            t.commit();
+        } catch (Exception e) {
+            t.rollback();
+            log.error(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 根据类型和实体id，查询实体
+     * @param entityClazz
+     * @param entityId
+     * @param <T>
+     */
+    public <T extends EntityBase>  T  getEntity(Class<T> entityClazz, String entityId) {
+        Session s = getSession();
+        Transaction t = s.beginTransaction();
+        T retval = null;
+        try {
+            retval =  (T) s.get(entityClazz,entityId);
+            t.commit();
+        } catch (Exception e) {
+            t.rollback();
+            log.error(e.getMessage());
+            e.printStackTrace();
+        }
+        return retval;
+    }
+
+    /**
+     * 拼装sql参数使用
+     *
+     * @param cols
+     * @return
+     */
+    public static String toCommaSeparateString(List<String> cols) {
+        final String delimit = ", ";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0, ln = cols.size(); i < ln; i++) {
+            if (i > 0)
+                sb.append(delimit);
+            sb.append(cols.get(i));
+        }
+        int idx = sb.lastIndexOf(delimit);
+        sb.delete(idx, sb.length());
+
+        return sb.toString();
+    }

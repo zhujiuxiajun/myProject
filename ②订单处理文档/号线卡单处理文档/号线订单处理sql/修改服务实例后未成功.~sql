@@ -1,0 +1,24 @@
+ SELECT a.*, a.rowid, c.comm_serv_name
+   FROM serv_acc_nbr a, serv b, comm_serv_spec c
+  where a.serv_id = b.serv_id
+    and b.comm_serv_spec_id = c.comm_serv_spec_id
+    and a.acc_nbr = '09202627'
+    and a.local_net_id = 819
+    and a.sts = 1;
+    
+    
+    
+ select a.*, a.rowid
+   from T_IMP_USER_INS_UPDATE a
+  WHERE a.user_nbr = '09203284';  
+  
+  
+  
+ update serv a set a.sts = 2 WHERE a.serv_id = 96673951;   --ÐÞ¸ÄÄ³¸öºÅÂëÎª×÷·Ï×´Ì¬
+ update serv_acc_nbr a set a.sts = 2 WHERE a.serv_id = 96673951;
+ update serv_addr a set a.sts = 2 WHERE a.serv_id = 96673951;
+ update serv_cust a set a.sts = 2 WHERE a.serv_id = 96673951;
+ update serv_prod a set a.sts = 2 WHERE a.serv_id = 96673951;
+ update serv_res a set a.sts = 2 WHERE a.serv_id = 96673951;
+  
+  

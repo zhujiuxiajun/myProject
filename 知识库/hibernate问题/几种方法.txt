@@ -1,0 +1,43 @@
+¢Ÿsql–¥∑®   
+ public List<SandStorageDto> querySandStorage(){
+        List<SandStorageDto> storageDtos = new ArrayList<SandStorageDto>();
+        String sql = "select id,mtr_name as sandType,total_qty as quantity from vsand_near_steel_total";
+        storageDtos = nFind(SandStorageDto.class,sql,new Object[]{});
+        return storageDtos;
+    }
+
+
+¢⁄hql–¥∑®
+    public Float queryDeliveryFail(String taskId){
+        String hql = " from SandDeliverItem sd where 1=1 and sd.taskId ='"+taskId +"' and sd.checkStatus ="+BizConst.DplanSandTaskCheckStatus.FAIL;
+        List<SandDeliverItem> items = hFind(hql, SandDeliverItem.class, new Object[]{});
+        if(items.size()==0){
+            return 0f;
+        }else{
+            return 1f;
+        }
+    }
+
+
+¢€Criteria–¥∑®
+    public DplanSand getStirDplan(String id, Date planDate) {
+        Session s = getSession();
+        Transaction t = s.beginTransaction();
+        DplanSand retval = null;
+        try {
+            Criteria c = s.createCriteria(DplanSand.class);
+            if (StringUtils.isNotEmpty(id))
+                c.add(Restrictions.idEq(id));
+            else if (null != planDate) {
+                c.add(Restrictions.between(DplanSand.PLANDATE, DateUtils.getDayStart(planDate), DateUtils.getDayEnd(planDate)));
+            }
+            c.addOrder(Order.desc(DplanSand.PLANDATE));
+            retval = CollectionUtils.isEmpty(c.list()) ? null : ((List<DplanSand>) c.list()).get(0);
+            t.commit();
+        } catch (Exception e) {
+            t.rollback();
+            log.error(e.getMessage());
+            e.printStackTrace();
+        }
+        return retval;
+    }
